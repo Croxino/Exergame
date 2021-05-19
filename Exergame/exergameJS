@@ -15,6 +15,8 @@ let score = 0;
 //let currentQuestion = questionID;
 let ctx = canvas.getContext("2d");
 canvas.addEventListener('click', clickReporter, false);
+window.addEventListener('keydown',keyDown);
+//window.addEventListener('keyup',keyUp);
 
 let widthBox = 150;
 let heightBox = 200;
@@ -164,6 +166,36 @@ function clickReporter(e) { /// assign event to some variable
 		nextQuestion()
 
     }
+
+}
+
+function keyDown(e){
+	if (e.key == '1') {
+		if (answerA == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
+
+		if (e.key == '2') {
+		if (answerB == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
+
+		if (e.key == '3') {
+		if (answerC == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
 
 }
 
