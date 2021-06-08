@@ -1,0 +1,356 @@
+let canvas = document.getElementById("gameScreen");
+let sum;
+let sumB = Math.floor(Math.random() * 11) +1;
+let sumC = Math.floor(Math.random() * 11) +1;
+let sumTotal = sumB + sumC;
+let answerA;
+let answerB;
+let answerC;
+let wrongAnswerA;
+let wrongAnswerB;
+let wrongAnswerC;
+let questionID = 0;
+let score = 0;
+let url = 'http://35.205.189.186/api/progress/progress';
+let req = new XMLHttpRequest();
+//let currentQuestion = questionID;
+let ctx = canvas.getContext("2d");
+canvas.addEventListener('click', clickReporter, false);
+window.addEventListener('keydown',keyDown);
+//window.addEventListener('keyup',keyUp);
+
+let widthBox = 150;
+let heightBox = 200;
+
+
+
+var questionbar = new Image();   // Create new img element
+questionbar.addEventListener('load', function() {
+currentQuestion();
+}, false);
+questionbar.src = 'assets/Path 1@2x.png'; // Set source path
+
+
+
+var chalk = new Image();   // Create new img element
+chalk.addEventListener('load', function() 
+{
+drawSum();
+
+}, false);
+chalk.src = 'assets/chalkboard@2x.png'; // Set source path
+
+var star = new Image();   // Create new img element
+star.addEventListener('load', function() 
+{
+   drawScore();
+
+}, false);
+star.src = 'assets/star@2x.png'; // Set source path
+
+
+var avatar = new Image();   // Create new img element
+avatar.addEventListener('load', function() {
+    	ctx.drawImage(avatar, 10, 150, 300, 500);
+}, false);
+avatar.src = 'assets/avatar.png'; // Set source path
+
+var bluebox = new Image();   // Create new img element
+bluebox.addEventListener('load', function() {
+drawBox(bluebox, 300, 400, answerA, 355, 455);
+}, false);
+bluebox.src = 'assets/Group 6@2x.png'; // Set source path
+
+var redbox = new Image();   // Create new img element
+redbox.addEventListener('load', function() {
+		drawBox(redbox, 450, 430, answerB, 515, 485);
+}, false);
+redbox.src = 'assets/Group 7@2x.png'; // Set source path
+
+var greenbox = new Image();   // Create new img element
+greenbox.addEventListener('load', function() {
+drawBox(greenbox, 610, 460, answerC, 660, 515);
+}, false);
+greenbox.src = 'assets/Group 8@2x.png'; // Set source path
+
+function drawSum()
+{
+	    ctx.drawImage(chalk, 500, 150, 400, 250);
+    	ctx.font = "65px Pacifico";
+    	ctx.fillStyle = "white";
+		ctx.fillText(sum,540,280);
+
+}
+
+function currentQuestion()
+{
+		let question = questionID + "/10";
+    	ctx.drawImage(questionbar, 350, 0, 300, 100);
+        ctx.font = "35px Pacifico";
+        ctx.fillStyle = "white";
+        ctx.fillText("Vraag",450,40);
+        ctx.fillText(question,470,80);
+}
+
+
+
+function drawBox(image, x, y, text, textX, textY)
+{
+	    ctx.drawImage(image, x, y, widthBox, heightBox);
+    	ctx.font = "65px Pacifico";
+    	ctx.fillStyle = "white";
+		ctx.fillText(text,textX,textY);
+
+}
+
+function drawScore(){
+		ctx.drawImage(star, 850, 20, 80, 80);
+    	ctx.font = "35px Pacifico";
+        ctx.fillText("Punten",740,75);
+        ctx.fillText(score,870,75);
+}
+
+
+
+function draw()
+{
+		drawBox(bluebox, 300, 400, answerA, 355, 455);
+		drawBox(redbox, 450, 430, answerB, 515, 485);
+		drawBox(greenbox, 610, 460, answerC, 660, 515);
+		currentQuestion();
+		drawSum();
+		drawScore();
+}
+
+function clickReporter(e) { /// assign event to some variable
+
+ //mouse click events.
+ /// adjust mouse click position to be relative to canvas:
+    var rect = this.getBoundingClientRect(),
+        x = e.clientX - rect.left,
+        y = e.clientY - rect.top;
+
+    /// check x/y coordinate against the image position and dimension
+    if (x >= 300 && x <= (300 + widthBox) && y >= 400 && y <= (400 + heightBox))  
+    {
+
+		if (answerA == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+    }
+
+    if (x >= 450 && x <= (450 + widthBox) && y >= 430 && y <= (430 + heightBox))  
+    {
+    	    	
+		if (answerB == sumTotal) 
+		{
+							score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+    }
+
+    if (x >= 640 && x <= ( 640 + widthBox) && y >= 460 && y <= (460 + heightBox))  
+    {
+
+		if (answerC == sumTotal) 
+		{
+							score +=10;
+			console.log("ID" + questionID);
+		}
+		nextQuestion()
+
+    }
+
+}
+
+function keyDown(e){
+	if (e.key == '1') {
+		if (answerA == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
+
+		if (e.key == '2') {
+		if (answerB == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
+
+		if (e.key == '3') {
+		if (answerC == sumTotal) 
+		{
+			score +=10;
+			console.log("ID" + questionID);
+		}
+					nextQuestion()
+	}
+
+}
+
+function getWrong()
+{
+ let randomWrong = Math.floor((Math.random() + Math.random()) * 11 +1);
+ while (randomWrong === sumTotal || randomWrong === wrongAnswerA || randomWrong === wrongAnswerB || randomWrong === wrongAnswerC) {
+ 	randomWrong = Math.floor((Math.random() + Math.random()) * 11 +1);
+
+ }
+ return randomWrong;
+}
+
+
+
+function nextQuestion()
+{
+questionID++
+
+sumB = Math.floor(Math.random() * 11 + 1);
+sumC = Math.floor(Math.random() * 11 + 1);
+sumTotal = sumB + sumC;
+wrongAnswerA = getWrong();
+wrongAnswerB = getWrong();
+wrongAnswerC = getWrong();
+
+const i = Math.floor((Math.random() * 3) +1);
+sum = sumB + " + " + sumC + " = " + "?";
+
+if (i === 1) 
+	{
+	  answerA = sumTotal
+	} 
+	else 
+	{
+	  answerA = wrongAnswerA
+	}
+
+if (i === 2) 
+	{
+	  answerB = sumTotal
+	} 
+	else 
+	{
+	  answerB = wrongAnswerB
+	}
+
+if (i === 3) 
+	{
+	  answerC = sumTotal
+	} 
+	else 
+	{
+	  answerC = wrongAnswerC
+	}
+
+
+
+draw();
+endGame();
+}
+
+// function sendjson()
+// {
+// 	const toSend = {
+// 	score: score,
+// 	time: 0
+// };
+
+// const jsonString = JSON.stringify(toSend);
+// const xhr = new XMLHttpRequest();
+
+// xhr.open("POST", "exergameData.json");
+// xhr.setRequestHeader("Content-Type", "application/json");
+// xhr.send(jsonString);
+// console.log(jsonString);
+// }
+
+// sendjson();
+
+nextQuestion();
+
+// fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit', {
+// 	method: 'POST',
+// 	headers: {
+// 		'Content-type': 'application/json'
+// 	},
+// 	body: JSON.stringify({
+// 		score: '10',
+// 		time: '12'
+// 	})
+// })
+// 	.then(res => {
+// 		return res.json()
+// 	})
+// 	.then(data => console.log(data))
+
+
+
+// fetch('http://localhost/Exergame/exergameData.json', {
+// 	method: 'POST',
+// 	headers: {
+// 		'Content-Type': 'application/json'
+// 	},
+// 	body: JSON.stringify({
+// 		score: 10
+// 	})
+// }) .then(res => {
+// 	return res.json()
+// })
+
+// .then(data => console.log(data))
+
+// fetch('http://35.205.189.186/api/progress/progress')
+
+// .then (res=> res.json())
+// .then (data => console.log(data))
+
+console.log(req)
+
+req.open('POST', url, true);
+req.setRequestHeader("Content-Type", "application/json");
+req.onreadystatechange = () =>
+{
+	if (req.readyState === 4 && req.status === 201) {
+		let object = JSON.parse(req.response)
+		console.log(object)
+	}
+}
+
+let body = JSON.stringify({
+	gameName: "balansTot20",
+  value: 100,
+  measurementMoment: "2021-06-08T13:36:17.670Z",
+  extraData: {score: "10", timer:"00:20:00"},
+  studentId: 1,
+  competenceId: 1
+})
+
+req.send(body);
+
+
+
+
+
+
+function endGame(){
+
+if (questionID == 11) 
+	{
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(star, 400, 200, 200, 200);
+	    ctx.font = "65px Pacifico";
+        ctx.fillText("Goed gedaan!",340,120);
+        ctx.fillText(score,450,330);
+
+	}
+
+}
+
